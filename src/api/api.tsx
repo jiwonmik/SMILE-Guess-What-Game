@@ -1,9 +1,9 @@
-import axios from 'axios';
-import { IReqBody } from './types';
+import axios, { AxiosResponse } from 'axios';
+import { IReqBody, IResBody } from './types';
 
 const BASE_URL = 'https://www.smile-similarity.org/smile/smile-guess';
 
-export const getOpenAIResponse = async (input: IReqBody) => {
-  const response = await axios.post(`${BASE_URL}`, input);
-  return response;
+export const getOpenAIResponse = async (input: IReqBody): Promise<IResBody> => {
+  const response: AxiosResponse = await axios.post<IResBody>(`${BASE_URL}`, input);
+  return response.data;
 };

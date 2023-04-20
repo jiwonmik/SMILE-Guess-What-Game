@@ -1,6 +1,9 @@
 import styled from 'styled-components';
 import { motion } from 'framer-motion';
 import { useState } from 'react';
+import { getOpenAIResponse } from './api/api';
+import { IResBody } from './api/types';
+import { getRandomWord } from './utils';
 
 const Container = styled.div`
   display: flex;
@@ -32,7 +35,7 @@ const RandomWordBtn = styled.button`
   width: 500px;
 `;
 
-const PrompterWrapper = styled.div`
+const PrompterForm = styled.form`
   display: flex;
   flex-direction: row;
 `;
@@ -56,30 +59,58 @@ const PrompterBtn = styled.button`
   font-size: 20px;
 `;
 
+const Answer = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 20px;
+`;
+
 function App() {
   const [guessWord, setGuessWord] = useState('');
   const [question, setQuestion] = useState('');
+  const [gptAnswer, setGptAnswer] = useState<IResBody | null>(null);
 
-  const randomWordList = ['computer', 'classroom', 'school', 'language'];
-  const generateRandomWord = () => {
-    const randomWord = Math.floor(Math.random() * randomWordList.length);
-    console.log(randomWordList[randomWord]);
-    setGuessWord(randomWordList[randomWord]);
+  const onSubmitQuestion = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    getOpenAIResponse({ target_word: guessWord, question: question }).then((result) => {
+      setGptAnswer({
+        question: result.question,
+        valid: result.valid,
+        gpt_response: result.gpt_response,
+      });
+    });
   };
+
+  const startGame = () => {
+    setGuessWord(getRandomWord());
+    setGptAnswer(null);
+  };
+  console.log(guessWord);
 
   return (
     <Container>
       <GuessBox>
-        {guessWord ? (
+        {gptAnswer?.valid ? (
+          <>
+            <GuessWord>Your correct! The word is {guessWord}</GuessWord>
+            <RandomWordBtn onClick={startGame}>Try with another word</RandomWordBtn>
+          </>
+        ) : guessWord ? (
           <GuessWord>Now guess!</GuessWord>
         ) : (
-          <RandomWordBtn onClick={() => generateRandomWord()}>Generate Random Word</RandomWordBtn>
+          <RandomWordBtn onClick={startGame}>Generate Random Word</RandomWordBtn>
         )}
       </GuessBox>
-      <PrompterWrapper>
-        <Prompter value={question} placeholder="Ask a question and guess what the word is!" />
+      <PrompterForm onSubmit={onSubmitQuestion}>
+        <Prompter
+          value={question}
+          onChange={(e) => setQuestion(e.target.value)}
+          placeholder="Ask a question and guess what the word is!"
+        />
         <PrompterBtn>Enter</PrompterBtn>
-      </PrompterWrapper>
+      </PrompterForm>
+      <Answer>{gptAnswer?.gpt_response}</Answer>
     </Container>
   );
 }
