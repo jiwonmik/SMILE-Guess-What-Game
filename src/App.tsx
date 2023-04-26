@@ -2,7 +2,19 @@ import styled from 'styled-components';
 import { motion } from 'framer-motion';
 import { useState } from 'react';
 import { getRandomWord } from './utils';
-import { Button, Container, Heading, Input, Spinner, Text } from '@chakra-ui/react';
+import {
+  Alert,
+  AlertDescription,
+  AlertIcon,
+  AlertTitle,
+  Button,
+  Container,
+  Heading,
+  Highlight,
+  Input,
+  Spinner,
+  Text,
+} from '@chakra-ui/react';
 import useAnswer from './hooks/useAnswer';
 
 const Wrapper = styled.div`
@@ -17,13 +29,7 @@ const GuessBox = styled(motion.div)`
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 100px;
-`;
-
-const GuessWord = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  height: 250px;
 `;
 
 const PrompterForm = styled.form`
@@ -35,25 +41,53 @@ const PrompterForm = styled.form`
 function App() {
   const [guess_word, setGuessWord] = useState('');
   const [question, setQuestion] = useState('');
+  const [correct, setCorrect] = useState(false);
 
-  const { fetchStatus, data, refetch } = useAnswer({ guess_word, question });
+  const { isFetching, data, refetch } = useAnswer({ guess_word, question });
 
   const onSubmitQuestion = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    refetch();
+    refetch().then(() => setCorrect(true));
   };
 
   const startGame = () => {
     setGuessWord(getRandomWord());
+    setCorrect(false);
   };
 
   return (
     <Wrapper>
       <GuessBox>
-        {data?.valid ? (
+        {correct ? (
           <>
-            <GuessWord>Your correct! The word is {guess_word}</GuessWord>
-            <Button onClick={startGame}>Try with another word</Button>
+            <Container centerContent>
+              <Alert
+                status="success"
+                flexDir="column"
+                width="400px"
+                borderRadius="10px"
+                marginBottom="20px"
+                padding="30px"
+              >
+                <AlertIcon />
+                <AlertTitle marginBottom="10px">You are correct!</AlertTitle>
+                <AlertDescription>
+                  <Highlight
+                    query={guess_word}
+                    styles={{
+                      px: '2',
+                      py: '1',
+                      rounded: 'full',
+                      bg: 'red.100',
+                      fontWeight: 'bold',
+                    }}
+                  >
+                    {'The word is ' + guess_word}
+                  </Highlight>
+                </AlertDescription>
+              </Alert>
+              <Button onClick={startGame}>Try with another word</Button>
+            </Container>
           </>
         ) : guess_word ? (
           <Heading>Now guess!</Heading>
@@ -75,7 +109,7 @@ function App() {
         </Button>
       </PrompterForm>
       {data ? (
-        fetchStatus == 'fetching' ? (
+        isFetching ? (
           <Spinner />
         ) : (
           <Container bg="gray.100" padding="30px" borderRadius="10px">
