@@ -1,6 +1,6 @@
 export interface IReqBody {
   question: string;
-  target_word: string;
+  guess_word: string;
 }
 
 export interface IResBody {
