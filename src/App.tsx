@@ -1,11 +1,11 @@
 import styled from 'styled-components';
 import { motion } from 'framer-motion';
 import { useState } from 'react';
-import { getOpenAIResponse } from './api/api';
-import { IResBody } from './api/types';
 import { getRandomWord } from './utils';
+import { Button, Container, Heading, Input, Spinner, Text } from '@chakra-ui/react';
+import useAnswer from './hooks/useAnswer';
 
-const Container = styled.div`
+const Wrapper = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -26,92 +26,64 @@ const GuessWord = styled.div`
   align-items: center;
 `;
 
-const RandomWordBtn = styled.button`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  padding: 15px;
-  font-size: 20px;
-  width: 500px;
-`;
-
 const PrompterForm = styled.form`
   display: flex;
   flex-direction: row;
-`;
-
-const Prompter = styled(motion.input)`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  padding: 15px;
-  width: 600px;
-  height: 60px;
-  margin-right: 10px;
-  font-size: 20px;
-`;
-
-const PrompterBtn = styled.button`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  padding: 15px;
-  font-size: 20px;
-`;
-
-const Answer = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  font-size: 20px;
+  padding: 20px;
 `;
 
 function App() {
-  const [guessWord, setGuessWord] = useState('');
+  const [guess_word, setGuessWord] = useState('');
   const [question, setQuestion] = useState('');
-  const [gptAnswer, setGptAnswer] = useState<IResBody | null>(null);
+
+  const { fetchStatus, data, refetch } = useAnswer({ guess_word, question });
 
   const onSubmitQuestion = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    getOpenAIResponse({ target_word: guessWord, question: question }).then((result) => {
-      setGptAnswer({
-        question: result.question,
-        valid: result.valid,
-        gpt_response: result.gpt_response,
-      });
-    });
+    refetch();
   };
 
   const startGame = () => {
     setGuessWord(getRandomWord());
-    setGptAnswer(null);
   };
-  console.log(guessWord);
 
   return (
-    <Container>
+    <Wrapper>
       <GuessBox>
-        {gptAnswer?.valid ? (
+        {data?.valid ? (
           <>
-            <GuessWord>Your correct! The word is {guessWord}</GuessWord>
-            <RandomWordBtn onClick={startGame}>Try with another word</RandomWordBtn>
+            <GuessWord>Your correct! The word is {guess_word}</GuessWord>
+            <Button onClick={startGame}>Try with another word</Button>
           </>
-        ) : guessWord ? (
-          <GuessWord>Now guess!</GuessWord>
+        ) : guess_word ? (
+          <Heading>Now guess!</Heading>
         ) : (
-          <RandomWordBtn onClick={startGame}>Generate Random Word</RandomWordBtn>
+          <Button onClick={startGame}>Generate Random Word</Button>
         )}
       </GuessBox>
       <PrompterForm onSubmit={onSubmitQuestion}>
-        <Prompter
+        <Input
+          width="600px"
+          height="60px"
+          marginRight="10px"
           value={question}
           onChange={(e) => setQuestion(e.target.value)}
           placeholder="Ask a question and guess what the word is!"
         />
-        <PrompterBtn>Enter</PrompterBtn>
+        <Button colorScheme="red" w="80px" height="full" type="submit">
+          Enter
+        </Button>
       </PrompterForm>
-      <Answer>{gptAnswer?.gpt_response}</Answer>
-    </Container>
+      {data ? (
+        fetchStatus == 'fetching' ? (
+          <Spinner />
+        ) : (
+          <Container bg="gray.100" padding="30px" borderRadius="10px">
+            <Text>{data?.gpt_response}</Text>
+          </Container>
+        )
+      ) : null}
+    </Wrapper>
   );
 }
 
