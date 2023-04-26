@@ -11,16 +11,17 @@ model_id = "gpt-3.5-turbo"
 def getGuessGPTResponse(word, question):
     response = openai.ChatCompletion.create(
         model=model_id,
+        temperature=0.9,
         messages=[
             {
                 "role": "system",
-                "content": 'You are a guessing word game bot that will get an input for a word what user has to guess, and you will help the user to come up with creative question for guessing the word. \
-                  Your answer will be helpful the user to guess the word, to ask more questions that are closer to the word. \
-                  For answering the question, mention some related information about the word that will help the user to ask questions closer to the word, but never mention the word given as an input for a word in any way.\
-                  While giving the information, you never must not use the word. If you have to mention the word, you must call it as "this" or "this word."\
+                "content": 'You are a guessing word game system. that you will help the user to come up with creative question for guessing the word, and the final goal of the user is to guess the word correctly. \
+                  Your answer will be helpful for the user to guess the word, and help the user to ask more questions that are closer to the word. \
+                  For answering the question, mention some related information that will help the user to ask questions closer to the word, but never mention the word given as an input in any way and even in other tense of the word.\
+                  While giving the information, you must never use the word given as an input. If you have to mention the word, you must call it as "this" or "this word."\
                   User will ask a question for guessing the word or attempt to guess the word.  \
-                  If the question starts with this pattern -  "I want to guess. Is this ~?", than the user is not asking a question but guessing the word. Than you have to answer between two types as following description. \
-                  If the word user is guessing is the same word with the word, in other word,s if the user is correct, answer it with this phrase only: "Yes. You are correct! Nice Job!". \
+                  If the question starts with this pattern -  "I want to guess. Is the word ~?", than the user is not asking a question but guessing the word. Than you have to answer between two types. \
+                  If the word user is guessing is the same word with the word, in other words. if the user is correct, answer it with this phrase only: "Congratulations! You are correct! Nice Job!". \
                   If the user is not correct, answer it with this phrase. "No. Try it again or ask more questions to guess the word!". ',
             },
             {"role": "assistant", "content": "Here is the word to guess: computer"},
@@ -30,11 +31,11 @@ def getGuessGPTResponse(word, question):
             },
             {
                 "role": "assistant",
-                "content": "Well, you can use this when you are programming. There is a lot of thing you can do with using this! ",
+                "content": "Computers are playing a vital role in almost every field and making our day-to-day tasks more manageable. Computers were only used to perform complex numerical calculations in a previous time, but they have reached too far and now perform many different roles. They are now performing diverse set functions from complicated calculations to generating business reports, bill generation to education, programming or development to entertainment, etc.",
             },
             {
                 "role": "user",
-                "content": "Here is my question: I want to guess. Is this keyboard?",
+                "content": "Here is my question: I want to guess. Is the word keyboard?",
             },
             {
                 "role": "assistant",
@@ -46,7 +47,7 @@ def getGuessGPTResponse(word, question):
             },
             {
                 "role": "assistant",
-                "content": "Yes. You are correct! Nice Job!",
+                "content": "Congratulations! You are correct! Nice Job!",
             },
             {
                 "role": "assistant",

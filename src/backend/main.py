@@ -23,7 +23,7 @@ class GuessInput(BaseModel):
 
 @app.post("/smile/smile-guess")
 def guessPrompter(input: GuessInput):
-    gpt_response = getGuessGPTResponse(input.target_word, input.question)
+    gpt_response = getGuessGPTResponse(input.guess_word, input.question)
 
     question_info = {
         "question": input.question,
@@ -31,9 +31,7 @@ def guessPrompter(input: GuessInput):
         "gpt_response": gpt_response,
     }
 
-    correct_response = "Yes. You are correct! Nice Job!"
-
-    if correct_response in gpt_response:
+    if input.guess_word in gpt_response:
         question_info["valid"] = True
 
     return question_info
