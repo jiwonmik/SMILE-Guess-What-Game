@@ -23,7 +23,7 @@ const PrompterForm = styled.form`
 function App() {
   const [question, setQuestion] = useState('');
   const { guess_word, reset } = useGuessWord();
-  const { end } = useGame();
+  const { game, endGame } = useGame();
 
   const { fetchStatus, data, refetch } = useAnswer({ guess_word, question });
 
@@ -31,12 +31,13 @@ function App() {
     event.preventDefault();
     refetch().then(() => {
       if (data?.valid) {
-        end();
+        endGame();
         reset();
       }
     });
   };
-  console.log(guess_word);
+  // console.log(guess_word);
+  console.log(fetchStatus);
 
   return (
     <Wrapper>
@@ -50,18 +51,16 @@ function App() {
           onChange={(e) => setQuestion(e.target.value)}
           placeholder="Ask a question and guess what the word is!"
         />
-        <Button colorScheme="red" w="80px" height="full" type="submit">
+        <Button colorScheme="red" w="80px" height="full" type="submit" disabled={game}>
           Enter
         </Button>
       </PrompterForm>
-      {data ? (
-        fetchStatus == 'fetching' ? (
-          <Spinner />
-        ) : (
-          <Container bg="gray.100" padding="30px" borderRadius="10px">
-            <Text>{data?.gpt_response}</Text>
-          </Container>
-        )
+      {fetchStatus == 'fetching' ? (
+        <Spinner />
+      ) : data ? (
+        <Container bg="gray.100" padding="30px" borderRadius="10px">
+          <Text>{data?.gpt_response}</Text>
+        </Container>
       ) : null}
     </Wrapper>
   );

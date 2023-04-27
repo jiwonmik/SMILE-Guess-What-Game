@@ -23,11 +23,11 @@ const GuessBox = styled(motion.div)`
 
 function Instructor() {
   const { guess_word, generate } = useGuessWord();
-  const { game, start } = useGame();
+  const { game, startGame } = useGame();
 
-  const startGame = () => {
+  const start = () => {
     generate();
-    start();
+    startGame();
   };
 
   return (
@@ -60,13 +60,13 @@ function Instructor() {
                 </Highlight>
               </AlertDescription>
             </Alert>
-            <Button onClick={startGame}>Try with another word</Button>
+            <Button onClick={start}>Try with another word</Button>
           </Container>
         </>
       ) : guess_word ? (
         <Heading>Now guess!</Heading>
       ) : (
-        <Button onClick={startGame}>Generate Random Word</Button>
+        <Button onClick={start}>Generate Random Word</Button>
       )}
     </GuessBox>
   );
