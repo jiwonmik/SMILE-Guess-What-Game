@@ -6,6 +6,8 @@ import { theme, GlobalStyle } from '../styles/theme';
 import { ChakraProvider } from '@chakra-ui/react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
+import { GuessWordProvider } from './context/GuessWordContext';
+import { GameProvider } from './context/GameContext';
 
 const queryClient = new QueryClient();
 
@@ -15,7 +17,11 @@ ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
       <ThemeProvider theme={theme}>
         <QueryClientProvider client={queryClient}>
           <GlobalStyle />
-          <App />
+          <GuessWordProvider>
+            <GameProvider>
+              <App />
+            </GameProvider>
+          </GuessWordProvider>
           <ReactQueryDevtools />
         </QueryClientProvider>
       </ThemeProvider>
