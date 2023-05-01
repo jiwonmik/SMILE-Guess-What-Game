@@ -9,16 +9,20 @@ interface Props {
 
 const GameProvider = ({ children }: Props) => {
   const [game, setGame] = useState(false);
+  const [answer, setAnswer] = useState('');
 
   const startGame = () => {
     setGame(false);
+    setAnswer('');
   };
   const endGame = () => {
     setGame(true);
   };
 
   return (
-    <GameContext.Provider value={{ game, startGame, endGame }}>{children}</GameContext.Provider>
+    <GameContext.Provider value={{ game, answer, setAnswer, startGame, endGame }}>
+      {children}
+    </GameContext.Provider>
   );
 };
 

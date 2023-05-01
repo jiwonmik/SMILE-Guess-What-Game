@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Button, Container, Input, Spinner, Text } from '@chakra-ui/react';
 import useAnswer from './hooks/useAnswer';
 import Instructor from './components/Instructor';
@@ -22,22 +22,24 @@ const PrompterForm = styled.form`
 
 function App() {
   const [question, setQuestion] = useState('');
-  const { guess_word, reset } = useGuessWord();
-  const { game, endGame } = useGame();
+  const { guess_word } = useGuessWord();
+  const { game, endGame, answer, setAnswer } = useGame();
 
   const { fetchStatus, data, refetch } = useAnswer({ guess_word, question });
 
   const onSubmitQuestion = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    refetch().then(() => {
-      if (data?.valid) {
-        endGame();
-        reset();
-      }
-    });
+    refetch();
   };
-  // console.log(guess_word);
-  console.log(fetchStatus);
+
+  useEffect(() => {
+    if (data?.valid) {
+      endGame();
+    }
+    setAnswer(data?.gpt_response);
+  }, [data]);
+  console.log(guess_word);
+  console.log('answer is: ', answer);
 
   return (
     <Wrapper>
@@ -57,9 +59,9 @@ function App() {
       </PrompterForm>
       {fetchStatus == 'fetching' ? (
         <Spinner />
-      ) : data ? (
+      ) : answer ? (
         <Container bg="gray.100" padding="30px" borderRadius="10px">
-          <Text>{data?.gpt_response}</Text>
+          <Text>{answer}</Text>
         </Container>
       ) : null}
     </Wrapper>
