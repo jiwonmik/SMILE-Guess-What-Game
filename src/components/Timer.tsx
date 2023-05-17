@@ -24,7 +24,7 @@ const Timer = () => {
 
   return (
     <div className="timer">
-      {minutes}:{seconds < 10 ? `0${seconds}` : seconds}
+      {minutes < 10 ? `0${minutes}` : minutes}:{seconds < 10 ? `0${seconds}` : seconds}
     </div>
   );
 };
