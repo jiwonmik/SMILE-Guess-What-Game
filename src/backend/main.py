@@ -5,7 +5,11 @@ from guess_question_gpt import getGuessGPTResponse
 
 app = FastAPI()
 
-origins = ["http://localhost:5173", "https://smile-question-prompter.vercel.app"]
+origins = [
+    "http://localhost:5173",
+    "https://smile-question-prompter.vercel.app",
+    "https://smile-guess-what-game.vercel.app",
+]
 
 app.add_middleware(
     CORSMiddleware,
