@@ -5,6 +5,7 @@ import useAnswer from './hooks/useAnswer';
 import Instructor from './components/Instructor';
 import useGuessWord from './hooks/useGuessWord';
 import useGame from './hooks/useGame';
+import Timer from './components/Timer';
 
 const Wrapper = styled.div`
   display: flex;
@@ -38,11 +39,10 @@ function App() {
     }
     setAnswer(data?.gpt_response);
   }, [data]);
-  console.log(guess_word);
-  console.log('answer is: ', answer);
 
   return (
     <Wrapper>
+      <Timer />
       <Instructor />
       <PrompterForm onSubmit={onSubmitQuestion}>
         <Input
