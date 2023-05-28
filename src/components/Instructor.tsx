@@ -13,6 +13,7 @@ import {
 
 import useGame from '../hooks/useGame';
 import useGuessWord from '../hooks/useGuessWord';
+import SetTimer from './SetTimer';
 
 const GuessBox = styled(motion.div)`
   display: flex;
@@ -31,44 +32,47 @@ function Instructor() {
   };
 
   return (
-    <GuessBox>
-      {game ? (
-        <>
-          <Container centerContent>
-            <Alert
-              status="success"
-              flexDir="column"
-              width="400px"
-              borderRadius="10px"
-              marginBottom="20px"
-              padding="30px"
-            >
-              <AlertIcon />
-              <AlertTitle marginBottom="10px">You are correct!</AlertTitle>
-              <AlertDescription>
-                <Highlight
-                  query={guess_word}
-                  styles={{
-                    px: '2',
-                    py: '1',
-                    rounded: 'full',
-                    bg: 'red.100',
-                    fontWeight: 'bold',
-                  }}
-                >
-                  {'The word is ' + guess_word}
-                </Highlight>
-              </AlertDescription>
-            </Alert>
-            <Button onClick={start}>Try with another word</Button>
-          </Container>
-        </>
-      ) : guess_word ? (
-        <Heading>Now guess!</Heading>
-      ) : (
-        <Button onClick={start}>Generate Random Word</Button>
-      )}
-    </GuessBox>
+    <>
+      <SetTimer />
+      <GuessBox>
+        {game ? (
+          <>
+            <Container centerContent>
+              <Alert
+                status="success"
+                flexDir="column"
+                width="400px"
+                borderRadius="10px"
+                marginBottom="20px"
+                padding="30px"
+              >
+                <AlertIcon />
+                <AlertTitle marginBottom="10px">You are correct!</AlertTitle>
+                <AlertDescription>
+                  <Highlight
+                    query={guess_word}
+                    styles={{
+                      px: '2',
+                      py: '1',
+                      rounded: 'full',
+                      bg: 'red.100',
+                      fontWeight: 'bold',
+                    }}
+                  >
+                    {'The word is ' + guess_word}
+                  </Highlight>
+                </AlertDescription>
+              </Alert>
+              <Button onClick={start}>Try with another word</Button>
+            </Container>
+          </>
+        ) : guess_word ? (
+          <Heading>Now guess!</Heading>
+        ) : (
+          <Button onClick={start}>Generate Random Word</Button>
+        )}
+      </GuessBox>
+    </>
   );
 }
 
