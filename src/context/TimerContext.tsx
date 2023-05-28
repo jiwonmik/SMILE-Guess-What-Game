@@ -1,4 +1,4 @@
-import { createContext, useState } from 'react';
+import { createContext, useEffect, useState } from 'react';
 import { TimerContextType } from '../types/timer';
 
 const TimerContext = createContext<TimerContextType | null>(null);
@@ -16,11 +16,40 @@ const initialState = {
 const TimerProvider = ({ children }: Props) => {
   const [timer, setTimer] = useState(initialState);
 
-  const timerOn = () => {
-    setTimer((prev) => {
+  useEffect(() => {
+    const timerFn = setInterval(() => {
+      if (timer.seconds > 0) {
+        setTimer((prev) => {
+          return {
+            ...prev,
+            seconds: timer.seconds - 1,
+          };
+        });
+      }
+      if (timer.seconds == 0) {
+        if (timer.minutes == 0) {
+          clearInterval(timerFn);
+          () => timerOff();
+        } else {
+          setTimer((prev) => {
+            return {
+              ...prev,
+              minutes: timer.minutes - 1,
+              seconds: 59,
+            };
+          });
+        }
+      }
+    }, 1000);
+    return () => clearInterval(timerFn);
+  }, [timer.seconds]);
+
+  const timerOn = (minutes: number, seconds: number) => {
+    setTimer(() => {
       return {
-        ...prev,
         isOn: true,
+        minutes: minutes,
+        seconds: seconds,
       };
     });
   };

@@ -8,6 +8,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import { GuessWordProvider } from './context/GuessWordContext';
 import { GameProvider } from './context/GameContext';
+import { TimerProvider } from './context/TimerContext';
 
 const queryClient = new QueryClient();
 
@@ -18,9 +19,11 @@ ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
         <QueryClientProvider client={queryClient}>
           <GlobalStyle />
           <GuessWordProvider>
-            <GameProvider>
-              <App />
-            </GameProvider>
+            <TimerProvider>
+              <GameProvider>
+                <App />
+              </GameProvider>
+            </TimerProvider>
           </GuessWordProvider>
           <ReactQueryDevtools />
         </QueryClientProvider>

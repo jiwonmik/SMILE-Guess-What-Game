@@ -6,6 +6,6 @@ export interface ITimer {
 
 export type TimerContextType = {
   timer: ITimer;
-  timerOn: () => void;
+  timerOn: (minutes: number, seconds: number) => void;
   timerOff: () => void;
 };
